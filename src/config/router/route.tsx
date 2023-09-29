@@ -16,7 +16,7 @@ export default function AppRouter() {
           <Route path="/" element={<Login />} />
           <Route path="SignUp" element={<SignUp />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="AdminPanel/*" element={<AdminPanel />} />
+          <Route path="AdminPanel/*" element={<Protected Screen={AdminPanel} />} />
         </Routes>
       </Router>
     </>

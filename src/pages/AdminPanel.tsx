@@ -6,31 +6,23 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import MessageIcon from "@mui/icons-material/Message";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AllInboxIcon from "@mui/icons-material/AllInbox";
 import ADMessage from "./admin_pages/Message";
 import ADNotification from "./admin_pages/Notification";
 import ADSettings from "./admin_pages/Settings";
 import ADPost from "./admin_pages/Post";
 import ADSinglePost from "./admin_pages/SinglePost";
-import { Settings } from "@mui/icons-material";
 import SMButton from "../components/SMButton";
 import SMInput from "../components/SMInput";
 import { TextField } from "@mui/material";
 import { useState, useEffect } from "react";
-import { fbAdd, fbGet, fbSignUp } from "../config/firebase/firebase-methods";
+import { fbAdd, fbGet} from "../config/firebase/firebase-methods";
 
 const drawerWidth = 240;
 
@@ -40,32 +32,6 @@ function AdminPanel(props: any) {
   const [model, setModel] = useState<any>({});
   const [isDisabled, setIsDisabled] = useState(false); 
   const [quizList, setQuizList] = useState<any>({});
-  const [pagesArr, setPagesArr] = React.useState([
-    {
-      name: "HTML",
-      route: "Message",
-      icon: <MessageIcon />,
-    },
-    {
-      name: "CSS",
-      route: "Notification",
-      icon: <NotificationsIcon />,
-    },
-    {
-      name: "JS Quiz 1",
-      route: "Post",
-      icon: <AllInboxIcon />,
-    },
-    {
-      name: "JS Quiz 2",
-      route: "Settings",
-      icon: <Settings />,
-    },
-    {
-      name: "Product",
-      route: "Product",
-    },
-  ]);
   const fillModel = (key: string, val: string) => {
     model[key] = val;
     setModel({ ...model });
@@ -109,21 +75,17 @@ function AdminPanel(props: any) {
     setMobileOpen(!mobileOpen);
   };
 
-  const openPage = (route: any) => {
-    navigate(`/AdminPanel/${route}`);
-  };
 
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
-      <List>
-        {pagesArr.map((x, index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton onClick={() => openPage(x.route)}>
-              <ListItemIcon>{x.icon ? x.icon : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={x.name} />
-            </ListItemButton>
+      <List> 
+            {quizList &&
+            quizList.length > 0 &&
+            quizList.map((x: any) => (
+          <ListItem key={x.id}>
+              <ListItemText primary={x.quizname} />
           </ListItem>
         ))}
       </List>
@@ -244,6 +206,7 @@ function AdminPanel(props: any) {
               />
             </div>
             <div className="col-3 m-2 ">
+              
               <SMInput
                 value={model.secretkey}
                 onChange={(e: any) => fillModel("secretkey", e.target.value)}
@@ -328,22 +291,7 @@ function AdminPanel(props: any) {
               />
             </div>
           </div>
-          <div>
-          {quizList &&
-            quizList.length > 0 &&
-            quizList.map((x: any) => (
-              <div className="rounded bg-white shadow p-2 m-2" key={x.id}>
-                <h1 className="">{x.quizname}</h1>
-                <p className="">{x.duration}</p>
-                <p className="">{x.secretkey}</p>
-                <p className="">{x.isOpen}</p>
-                <p className="">{x.description}</p>
-                {/* <p className="">{x.quizquestion.question}</p>
-                <p className="">{x.quizquestion.options}</p>
-                <p className="">{x.quizquestion.correctanswer}</p> */}
-              </div>
-            ))}
-          </div>
+          
         </div>
 
         <Routes>
