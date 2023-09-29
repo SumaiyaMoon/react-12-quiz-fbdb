@@ -15,10 +15,15 @@ export default function SignUp() {
   const navigate = useNavigate();
 
   let signUpUser = () => {
+    model.role ="user"
     console.log(model);
     fbSignUp(model)
-      .then((res) => {
-        navigate("/");
+      .then((res: any) => {
+        if(res.role == "admin"){
+          navigate("/AdminPanel");
+        } else{
+          navigate("/Quiz");
+        }
       })
       .catch((err) => {
         console.log(err);

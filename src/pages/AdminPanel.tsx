@@ -59,6 +59,11 @@ function AdminPanel(props: any) {
     .then((res) => {
       console.log(res);
       setModel({});
+      setQuestion("");
+      setOptionsList([]);
+      setCorrectOption("");
+      setQuestionModel({});
+      setQuizQuestions([]);
       getQuiz();
     })
     .catch((err) => {
@@ -114,7 +119,7 @@ function AdminPanel(props: any) {
     ...questionModel, 
   });
   setQuizQuestions([...quizQuestions, questionModel]);
-   model.quiz = quizQuestions
+  model.quiz = quizQuestions;
    setQuestion("");
    setOptionsList([])
    setCorrectOption("")
@@ -243,7 +248,7 @@ function AdminPanel(props: any) {
           <div className="row m-2 p-2">
             <div className="col-3 m-2 ">
               <SMInput
-                value={model.quizname}
+                value={model.quizname || " "}
                 onChange={(e: any) => fillModel("quizname", e.target.value)}
                 textFieldId="option"
                 textFieldLabel="Quiz Name"
@@ -254,7 +259,7 @@ function AdminPanel(props: any) {
             </div>
             <div className="col-3 m-2 ">
               <SMInput
-                value={model.duration}
+                value={model.duration || " "}
                 onChange={(e: any) => fillModel("duration", e.target.value)}
                 textFieldId="option"
                 textFieldLabel="Quiz Duration in minutes"
@@ -266,7 +271,7 @@ function AdminPanel(props: any) {
             <div className="col-3 m-2 ">
               
               <SMInput
-                value={model.secretkey}
+                value={model.secretkey || " "}
                 onChange={(e: any) => fillModel("secretkey", e.target.value)}
                 textFieldId="option"
                 textFieldLabel="Secret Key"
@@ -278,7 +283,7 @@ function AdminPanel(props: any) {
 
             <div className="col-3 m-2 ">
               <SMInput
-                value={model.isOpen}
+                value={model.isOpen || " "}
                 onChange={(e: any) => fillModel("isOpen", e.target.value)}
                 textFieldId="option"
                 textFieldLabel="Quiz Open"
@@ -289,7 +294,7 @@ function AdminPanel(props: any) {
             </div>
             <div className="col-6 m-2 ">
               <SMInput
-                value={model.description}
+                value={model.description || " "}
                 onChange={(e: any) => fillModel("description", e.target.value)}
                 textFieldId="option"
                 textFieldLabel="Description"
@@ -355,17 +360,17 @@ function AdminPanel(props: any) {
 
             </div>
             <div className="col-3 m-5">
-              {correctOption && (
-              <TextField
-                fullWidth={true}
-                id="outlined-disabled"
-                disabled
-                label={correctOption}
-                variant="outlined"
-                value={questionModel.answer}
-                onChange={(e: any)=>{fillQuestionModel("answer",e.target.value)}}
-              />
-              )}
+            {correctOption && (
+  <TextField
+    fullWidth={true}
+    id="outlined-disabled"
+    disabled
+    label='Correct Option'
+    variant="outlined"
+    value={correctOption} // Set the value to questionModel.answer, or an empty string if it's not available
+    onChange={(e: any) => { fillQuestionModel("answer", e.target.value) }}
+  />
+)}
             </div>
           </div>
           <div>
@@ -377,7 +382,7 @@ function AdminPanel(props: any) {
           <div>
           <div>
   {/* Render questions from quizQuestions array */}
-  {quizQuestions.map((questionData: any, index: any) => (
+  {quizQuestions && quizQuestions.length> 0 && quizQuestions.map((questionData: any, index: any) => (
     <Paper key={index}>
       <h4>Question {index + 1}: {questionData.question}</h4>
       <p>Options:</p>

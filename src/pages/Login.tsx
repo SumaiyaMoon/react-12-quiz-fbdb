@@ -17,9 +17,13 @@ export default function Login() {
   let LoginUser = () => {
     console.log(model);
     fbLogin(model)
-      .then((res) => {
+      .then((res: any) => {
         console.log(res);
-        navigate("/Quiz");
+        if(res.role == "admin"){
+          navigate("/AdminPanel");
+        } else{
+          navigate("/Quiz");
+        }
       })
       .catch((err) => {
         console.log(err);
