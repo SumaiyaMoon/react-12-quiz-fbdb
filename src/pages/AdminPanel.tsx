@@ -20,23 +20,40 @@ import ADPost from "./admin_pages/Post";
 import ADSinglePost from "./admin_pages/SinglePost";
 import SMButton from "../components/SMButton";
 import SMInput from "../components/SMInput";
-import { TextField } from "@mui/material";
+import { TextField, Button, Paper } from "@mui/material";
 import { useState, useEffect } from "react";
 import { fbAdd, fbGet} from "../config/firebase/firebase-methods";
 
 const drawerWidth = 240;
 
 function AdminPanel(props: any) {
-  const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [model, setModel] = useState<any>({});
-  const [isDisabled, setIsDisabled] = useState(false); 
-  const [quizList, setQuizList] = useState<any>({});
-  const fillModel = (key: string, val: string) => {
+  const { window } = props; // mui 
+  const navigate = useNavigate(); //navigation
+  const [mobileOpen, setMobileOpen] = React.useState(false); // mui 
+  const [model, setModel] = useState<any>({}); // complete quiz model
+  const [isDisabled, setIsDisabled] = useState(false); //lock unlock
+  const [quizList, setQuizList] = useState<any>({}); //list of quizes in sidebar
+  const [quizQuestions, setQuizQuestions] = useState<any>([]);
+  const [question, setQuestion] = useState<any>(""); // a question
+  const [option, setOption] = useState<any>(""); //setting option
+  const [optionsList, setOptionsList ] = useState<any>([]); //options list of a question
+  const [correctOption, setCorrectOption] = useState<any>(); // setting correct option from options list of a question
+  const [questionModel, setQuestionModel] = useState<any>({}) //  question, correctanswer, optionsList
+
+  const fillModel = (key: string, val: string) => { 
+    //filling complete model
     model[key] = val;
     setModel({ ...model });
   };
-  let AddQuiz = () => {
+
+  const fillQuestionModel = (key: string, val: string) => { 
+    //filling complete QuestionModel
+    questionModel[key] = val;
+    setQuestionModel({ ...questionModel });
+  };
+
+  let SaveQuiz = () => {
+    //adding quiz in database
     console.log(model);
     fbAdd("quiz", model)
     .then((res) => {
@@ -48,7 +65,9 @@ function AdminPanel(props: any) {
       console.log(err);
     });
   };
+
   const getQuiz = () => {
+    //getting quizList from  database
     fbGet("quiz")
       .then((res: any) => {
         console.log(res);
@@ -58,29 +77,68 @@ function AdminPanel(props: any) {
         console.log(err);
       });
   };
+
   useEffect(() => {
+    //used to run function getQuiz()
     getQuiz();
   }, []);
 
   let LockQuiz = () => {
+    //lock unlock
     setIsDisabled(!isDisabled); 
   };
-  let AddOption = () => {};
-  const navigate = useNavigate();
+
+  let AddOptionsList = () => {
+    // Use the previous state to ensure you're updating correctly
+    setOptionsList((prevOptionsList: any) => {
+      const updatedOptionsList = [...prevOptionsList, option];
+      // console.log(updatedOptionsList); // Log the updated state
+
+      return updatedOptionsList;
+    });
+    
+    setOption(""); 
+  };
+  
   let LogOut = () => {
+    //logging out
     navigate("/");
   };
 
+  let AddQuizQuestioninModel = () => {
+   questionModel.question = question
+   questionModel.options = [...optionsList]
+   questionModel.answer = correctOption
+   console.log(questionModel)
+   setQuestionModel({
+    ...questionModel, 
+  });
+  setQuizQuestions([...quizQuestions, questionModel]);
+   model.quiz = quizQuestions
+   setQuestion("");
+   setOptionsList([])
+   setCorrectOption("")
+  };
+  
+  
+  
+
+
   const handleDrawerToggle = () => {
+    // mui handling
     setMobileOpen(!mobileOpen);
   };
 
 
   const drawer = (
+    //sidebar mui
     <div>
-      <Toolbar />
-      <Divider />
+      <div className="container d-flex align-items-center justify-content-center">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJFiKHbkBQTYhaU1x1TGreeVViDrWp3pPQEf-zcX9Smb80kGgEUkTPeGp95adj2PrIYSI&usqp=CAU" className="rounded-circle w-50 m-5" />
+      </div>
+
       <List> 
+        {/* quizList rendering list of all quiz names after getting from getQuiz(); */}
             {quizList &&
             quizList.length > 0 &&
             quizList.map((x: any) => (
@@ -90,13 +148,13 @@ function AdminPanel(props: any) {
         ))}
       </List>
       <div className="text-center">
-        <SMButton btnType={"button"} btnValue={"Logout"} onClick={LogOut} />
+        <Button className='position-absolute bottom-0 start-50 translate-middle-x mb-3' type="button" onClick={LogOut} variant='contained'>Log Out</Button>
       </div>
     </div>
   );
 
   const container =
-    window !== undefined ? () => window().document.body : undefined;
+    window !== undefined ? () => window().document.body : undefined; //mui handling
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -119,7 +177,7 @@ function AdminPanel(props: any) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Responsive drawer
+            Admin Panel
           </Typography>
         </Toolbar>
       </AppBar>
@@ -178,7 +236,7 @@ function AdminPanel(props: any) {
               <SMButton
                 btnType={"button"}
                 btnValue={"Save"}
-                onClick={AddQuiz}
+                onClick={SaveQuiz}
               />
             </div>
           </div>
@@ -249,49 +307,93 @@ function AdminPanel(props: any) {
             />  
           </div>
           <div>
-            {" "}
             <SMInput
-              textFieldId="question"
-              textFieldLabel="Type Question"
-              textFieldVariant={"outlined"}
-              type="text"
+               value={question}
+               onChange={(e: any) => setQuestion(e.target.value)} // Make sure onChange is set to update the state
+               textFieldId="option"
+               textFieldLabel="Question"
+               textFieldVariant="outlined"
+               type="text"
+               disabled={!isDisabled} // Check if isDisabled is set to true
             />
           </div>
           <div className="row">
             <div className="col-8">
-              <SMInput
-                textFieldId="option"
-                textFieldLabel="Options Here"
-                textFieldVariant={"outlined"}
-                type="text"
-              />
+            <SMInput
+  value={option}
+  onChange={(e: any) => setOption(e.target.value)} // Make sure onChange is set to update the state
+  textFieldId="option"
+  textFieldLabel="Options Here"
+  textFieldVariant="outlined"
+  type="text"
+  disabled={!isDisabled} // Check if isDisabled is set to true
+/>
+
             </div>
             <div className="col-2 text-center mt-3">
               <SMButton
                 btnType={"button"}
                 btnValue={"Add"}
-                onClick={AddOption}
+                onClick={AddOptionsList}
               />
             </div>
           </div>
           <div className="row">
             <div className="col-6">
-              <ul id="RenderList" className="list-unstyled">
-                <li className="m-2 p-2 border bg-info-subtle">Opt 1</li>
-                <li className="m-2 p-2 border bg-info-subtle">Opt 2</li>
-                <li className="m-2 p-2 border bg-info-subtle">Opt 3</li>
-              </ul>
+            <ul id="RenderList" className="list-unstyled">
+  {optionsList.map((option: any, index: any) => (
+    <li
+      key={index} // Provide a unique key
+      onClick={() => setCorrectOption(option)}
+      className="m-2 p-2 border bg-info-subtle"
+    >
+      {option}
+    </li>
+  ))}
+</ul>
+
+
             </div>
             <div className="col-3 m-5">
+              {correctOption && (
               <TextField
                 fullWidth={true}
-                id="outlined-basic"
-                label="Correct: Opt 2"
+                id="outlined-disabled"
+                disabled
+                label={correctOption}
                 variant="outlined"
+                value={questionModel.answer}
+                onChange={(e: any)=>{fillQuestionModel("answer",e.target.value)}}
               />
+              )}
             </div>
           </div>
-          
+          <div>
+
+          <button className="btn btn-info p-2" onClick={() => { AddQuizQuestioninModel() }}>Add Question</button>
+         
+          </div>
+        
+          <div>
+          <div>
+  {/* Render questions from quizQuestions array */}
+  {quizQuestions.map((questionData: any, index: any) => (
+    <Paper key={index}>
+      <h4>Question {index + 1}: {questionData.question}</h4>
+      <p>Options:</p>
+      <ul>
+        {questionData.options.map((option: any, optionIndex: any) => (
+          <li key={optionIndex}>{option}</li>
+        ))}
+      </ul>
+      <p>Correct Answer: {questionData.answer}</p>
+    </Paper>
+  ))}
+</div>
+
+
+</div>
+
         </div>
 
         <Routes>
@@ -302,9 +404,11 @@ function AdminPanel(props: any) {
           <Route path="SinglePost/:id" element={<ADSinglePost />} />
           {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
+
       </Box>
     </Box>
   );
+  
 }
 
 AdminPanel.propTypes = {
