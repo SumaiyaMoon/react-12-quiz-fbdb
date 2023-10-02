@@ -3,8 +3,9 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     onAuthStateChanged,
+    signOut
   } from "firebase/auth";
-  import { getDatabase, ref, set, onValue, push } from "firebase/database";
+  import { getDatabase, ref, set, onValue, push, onChildAdded, Database } from "firebase/database";
   import { app } from "./firebase-config";
   
   let auth = getAuth(app);
@@ -99,4 +100,6 @@ import {
       });
     });
   };
-  
+  export let fbLogOut = () =>{
+return signOut(auth)
+  }
