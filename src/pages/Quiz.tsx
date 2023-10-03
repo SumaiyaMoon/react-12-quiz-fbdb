@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fbGet } from "../config/firebase/firebase-methods";
 import { Button, Typography, CssBaseline, Container, Box, Grid, Paper } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import { styled } from "@mui/material/styles";
 
 export default function Quiz() {
-  const [quizList, setQuizList] = useState<any[]>([]);
+  const [quizList, setQuizList] = useState<any[]>([]); //rendering quiz
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); //setting index
+  const [userAnswers, setUserAnswers] = useState<string[]>([]); //checking answer
+  const [isActive, setisActive] = useState<boolean>(); //checking model.isOpen ?
+  const [userVerification, setUserVerification] = useState<any>(); //checking model.secretKey ?
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -31,7 +34,9 @@ export default function Quiz() {
     getQuiz();
   }, []);
 
+
   return (
+    
     <div>
       {quizList.map((quiz, index) => (
         <div key={index}>
@@ -63,7 +68,7 @@ export default function Quiz() {
                     <Grid item xs={12} md={12} lg={12} sm={12}>
                       <Item className="bg-danger-subtle my-3">
                         <Typography variant="body2" gutterBottom className="p-2">
-                          {question.question}
+                        {quizList[currentQuestionIndex].quiz[currentQuestionIndex].question}
                         </Typography>
                       </Item>
                     </Grid>
@@ -76,7 +81,7 @@ export default function Quiz() {
               <Container maxWidth="md">
                 <Box>
                   <Grid container spacing={2}>
-                    {question.options.map((option: string, index: number) => (
+                  {quizList[currentQuestionIndex].quiz[currentQuestionIndex].options.map((option: string, index: number) => (
                       <Grid key={index} item xs={12} md={6} lg={6} sm={12}>
                         <Item className="bg-info-subtle">
                           <Button
