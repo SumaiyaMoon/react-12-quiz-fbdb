@@ -5,11 +5,13 @@ import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import { styled } from "@mui/material/styles";
 
 export default function Quiz() {
-  const [quizList, setQuizList] = useState<any[]>([]); //rendering quiz
+  const [questionList, setquestionList] = useState<any[]>([]); //rendering questions of quiz
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); //setting index
   const [userAnswers, setUserAnswers] = useState<string[]>([]); //checking answer
-  const [isActive, setisActive] = useState<boolean>(); //checking model.isOpen ?
+  const [quizList, setquizList] = useState<any>([]); //handling all quizzes according to secretkey
   const [userVerification, setUserVerification] = useState<any>(); //checking model.secretKey ?
+  const [isActive, setisActive] = useState<boolean>(); //checking model.isOpen ?
+  const [marks, setMarks] = useState<number>(0); //result
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -23,7 +25,7 @@ export default function Quiz() {
     fbGet("quiz")
       .then((res: any) => {
         console.log(res);
-        setQuizList([...res]);
+        setquestionList([...res]);
       })
       .catch((err) => {
         console.log(err);
@@ -35,10 +37,11 @@ export default function Quiz() {
   }, []);
 
 
+
   return (
     
     <div>
-      {quizList.map((quiz, index) => (
+      {questionList.map((quiz, index) => (
         <div key={index}>
           {/* Random Functionalities */}
           <h1 className="text-center fst-italic my-2">{quiz.quizname}</h1>
@@ -47,9 +50,9 @@ export default function Quiz() {
             <Box>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={12} lg={12} sm={12}>
-                  <Item className="bg-warning-subtle">
+                  <Item className=" border border-dark bg-light border-1 rounded shadow-sm">
                     <CollectionsBookmarkIcon sx={{ fontSize: "medium" }} />
-                    <Typography marginLeft={0.5} variant="overline" display="block" gutterBottom>
+                    <Typography marginLeft={0.5} variant="overline" gutterBottom>
                       Question Length {quiz.quiz.length}
                     </Typography>
                   </Item>
@@ -66,9 +69,9 @@ export default function Quiz() {
                 <Box>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={12} lg={12} sm={12}>
-                      <Item className="bg-danger-subtle my-3">
-                        <Typography variant="body2" gutterBottom className="p-2">
-                        {quizList[currentQuestionIndex].quiz[currentQuestionIndex].question}
+                      <Item className="bg-info shadow-lg rounded border border-1 border-dark my-3">
+                        <Typography variant="body2" gutterBottom className="p-2 text-start">
+                      {[i+1]} : {questionList[currentQuestionIndex].quiz[currentQuestionIndex].question}
                         </Typography>
                       </Item>
                     </Grid>
@@ -81,17 +84,17 @@ export default function Quiz() {
               <Container maxWidth="md">
                 <Box>
                   <Grid container spacing={2}>
-                  {quizList[currentQuestionIndex].quiz[currentQuestionIndex].options.map((option: string, index: number) => (
+                  {questionList[currentQuestionIndex].quiz[currentQuestionIndex].options.map((option: string, index: number) => (
                       <Grid key={index} item xs={12} md={6} lg={6} sm={12}>
-                        <Item className="bg-info-subtle">
+                        <Item className="bg-light shadow-sm border border-dark border-1 rounded">
                           <Button
                             fullWidth={true}
                             sx={{
                               textTransform: "none",
                             }}
-                            className="text-body-secondary"
+                            className="text-body-secondary "
                           >
-                            {option}
+                           {option.toLowerCase()}
                           </Button>
                         </Item>
                       </Grid>
