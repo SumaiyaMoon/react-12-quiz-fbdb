@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { fbGet } from "../config/firebase/firebase-methods";
-import SMButton from "../components/SMButton";
-import SMInput from "../components/SMInput";
-import { Button, Typography } from "@mui/material";
-import CssBaseline from '@mui/material/CssBaseline';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Unstable_Grid2';
-import Container from '@mui/material/Container';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
-import { LegendToggleRounded } from '@mui/icons-material';
-
+import { Button, Typography, CssBaseline, Container, Box, Grid, Paper } from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
+import { styled } from "@mui/material/styles";
 
 export default function Quiz() {
-  const [quizList, setQuizList] = useState<any>([]);
-  const [answeredQuestions, setAnsweredQuestions] = useState<number[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  let [marks, setMarks] = useState<number>(0);
+  const [quizList, setQuizList] = useState<any[]>([]);
+
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  }));
 
   const getQuiz = () => {
-    // getting quizList from the database
     fbGet("quiz")
       .then((res: any) => {
         console.log(res);
@@ -33,228 +28,76 @@ export default function Quiz() {
   };
 
   useEffect(() => {
-    // used to run the function getQuiz()
     getQuiz();
   }, []);
 
-  //from mui
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  }));
-
-
-
-
-  const handlingUpcomingQuestion = () => {
-    if (currentQuestionIndex < quizList.quiz.question.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }
-  }
-  
-  //checing answer
-  let checkAnswer = function (a: any, b: any) {
-
-    if (!answeredQuestions.includes(currentQuestionIndex + 1)) {
-      if (a == b) {
-       
-        setMarks((prevMarks) => prevMarks + 1);
-    }
-    setAnsweredQuestions((prevAnswered) => [...prevAnswered, currentQuestionIndex]);
-  
-
-
-      if (currentQuestionIndex + 1 == quizList.quiz.question.length) {
-        alert("Your marks are" + marks + "out of" + quizList.quiz.question.length)
-      }
-
-    }
-  }
-
   return (
-//learning to render
-    // <>
-    //   {quizList && quizList.length > 0 ? (
-    //     quizList.map((quiz: any, i: any) => {
-    //       return (
-    //         <div key={i}>
-    //           <h2>{quiz.description}</h2>
-    //           <p>Duration: {quiz.duration} minutes</p>
-
-    //           <h3>Quiz Questions:</h3>
-    //           <ul>
-    //             {quiz.quiz &&
-    //               quiz.quiz.map((questionData: any, index: any) => (
-    //                 <li key={index}>
-    //                   <p>Question {index + 1}: {questionData.question}</p>
-    //                   <ul>
-    //                     {questionData.options.map(
-    //                       (option: any, optionIndex: any) => (
-    //                         <li key={optionIndex}>{option}</li>
-    //                       )
-    //                     )}
-    //                   </ul>
-    //                   <p>Answer: {questionData.answer}</p>
-    //                 </li>
-    //               ))}
-    //           </ul>
-    //         </div>
-    //       );
-    //     })
-    //   ) : (
-    //     <p>No quizzes available.</p>
-    //   )}
-    // </>
-//successfully rendered
-    <>
-     <>
-      <div>
-
-        {/* Random Functionalities */}
-        <h1 className='text-center fst-italic my-2'>| Quiz App |</h1>
-        <React.Fragment>
+    <div>
+      {quizList.map((quiz, index) => (
+        <div key={index}>
+          {/* Random Functionalities */}
+          <h1 className="text-center fst-italic my-2">{quiz.quizname}</h1>
           <CssBaseline />
           <Container maxWidth="md">
             <Box>
               <Grid container spacing={2}>
-                <Grid xs={12} md={12} lg={12} sm={12}>
-                  <Item className='bg-warning-subtle'>
-
-                    <CollectionsBookmarkIcon sx={{
-                      fontSize: "medium"
-                    }} />
+                <Grid item xs={12} md={12} lg={12} sm={12}>
+                  <Item className="bg-warning-subtle">
+                    <CollectionsBookmarkIcon sx={{ fontSize: "medium" }} />
                     <Typography marginLeft={0.5} variant="overline" display="block" gutterBottom>
-                      Question No.
-
-
-                      &nbsp;
-
-                      <span>1 / 10</span>
+                      Question Length {quiz.quiz.length}
                     </Typography>
                   </Item>
                 </Grid>
-
-              
               </Grid>
             </Box>
           </Container>
-        </React.Fragment>
 
-        {/* Question */}
-
-
-        <React.Fragment>
-          <CssBaseline />
-          <Container maxWidth="md">
-            <Box>
-              <Grid container spacing={2} >
-                <Grid xs={12} md={12} lg={12} sm={12}>
-                  <Item className='bg-danger-subtle my-3'>
-                    <Typography variant="body2" gutterBottom className='p-2'>
-                      Question
-                    </Typography>
-                  </Item>
-                </Grid>
-
-              </Grid>
-            </Box>
-          </Container>
-        </React.Fragment>
-
-
-        {/* Options */}
-        <React.Fragment>
-          <CssBaseline />
-          <Container maxWidth="md">
-            <Box>
-              <Grid container spacing={2} >
-                {/* {quizQuestions[currentQuestionIndex].options.map((option, index) => ( */}
-                  <Grid
-                  //  key={index}
-                    xs={12} md={6} lg={6} sm={12}>
-                    <Item className='bg-info-subtle'>
-                      <Button
-                        fullWidth={true}
-                        // onClick={() => {
-                        //   handlingUpcomingQuestion(); 
-                        //   checkAnswer(option, quizQuestions[currentQuestionIndex].answer); 
-                        // }}
-                        sx={{
-                          textTransform: 'none'
-                        }}
-                        className='text-body-secondary'
-                      >
-                        {/* {option} */} options
-                      </Button>
-                    </Item>
+          {quiz.quiz.map((question: any, i: number) => (
+            <div key={i}>
+              {/* Question */}
+              <CssBaseline />
+              <Container maxWidth="md">
+                <Box>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={12} lg={12} sm={12}>
+                      <Item className="bg-danger-subtle my-3">
+                        <Typography variant="body2" gutterBottom className="p-2">
+                          {question.question}
+                        </Typography>
+                      </Item>
+                    </Grid>
                   </Grid>
-                  <Grid
-                  //  key={index}
-                    xs={12} md={6} lg={6} sm={12}>
-                    <Item className='bg-info-subtle'>
-                      <Button
-                        fullWidth={true}
-                        // onClick={() => {
-                        //   handlingUpcomingQuestion(); 
-                        //   checkAnswer(option, quizQuestions[currentQuestionIndex].answer); 
-                        // }}
-                        sx={{
-                          textTransform: 'none'
-                        }}
-                        className='text-body-secondary'
-                      >
-                        {/* {option} */} options
-                      </Button>
-                    </Item>
+                </Box>
+              </Container>
+
+              {/* Options */}
+              <CssBaseline />
+              <Container maxWidth="md">
+                <Box>
+                  <Grid container spacing={2}>
+                    {question.options.map((option: string, index: number) => (
+                      <Grid key={index} item xs={12} md={6} lg={6} sm={12}>
+                        <Item className="bg-info-subtle">
+                          <Button
+                            fullWidth={true}
+                            sx={{
+                              textTransform: "none",
+                            }}
+                            className="text-body-secondary"
+                          >
+                            {option}
+                          </Button>
+                        </Item>
+                      </Grid>
+                    ))}
                   </Grid>
-                  <Grid
-                  //  key={index}
-                    xs={12} md={6} lg={6} sm={12}>
-                    <Item className='bg-info-subtle'>
-                      <Button
-                        fullWidth={true}
-                        // onClick={() => {
-                        //   handlingUpcomingQuestion(); 
-                        //   checkAnswer(option, quizQuestions[currentQuestionIndex].answer); 
-                        // }}
-                        sx={{
-                          textTransform: 'none'
-                        }}
-                        className='text-body-secondary'
-                      >
-                        {/* {option} */} options
-                      </Button>
-                    </Item>
-                  </Grid>
-                  <Grid
-                  //  key={index}
-                    xs={12} md={6} lg={6} sm={12}>
-                    <Item className='bg-info-subtle'>
-                      <Button
-                        fullWidth={true}
-                        // onClick={() => {
-                        //   handlingUpcomingQuestion(); 
-                        //   checkAnswer(option, quizQuestions[currentQuestionIndex].answer); 
-                        // }}
-                        sx={{
-                          textTransform: 'none'
-                        }}
-                        className='text-body-secondary'
-                      >
-                        {/* {option} */} options
-                      </Button>
-                    </Item>
-                  </Grid>
-                 {/* ))} */}
-              </Grid>
-            </Box>
-          </Container>
-        </React.Fragment>
-      </div>
-    </>
-    </>
+                </Box>
+              </Container>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
   );
 }
