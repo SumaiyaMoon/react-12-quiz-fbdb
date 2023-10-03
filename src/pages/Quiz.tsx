@@ -10,7 +10,7 @@ export default function Quiz() {
   const [userAnswers, setUserAnswers] = useState<string[]>([]); //checking answer
   const [quizList, setquizList] = useState<any>([]); //handling all quizzes according to secretkey
   const [userVerification, setUserVerification] = useState<any>(); //checking model.secretKey ?
-  const [isActive, setisActive] = useState<boolean>(); //checking model.isOpen ?
+  const [isActive, setisActive] = useState<boolean>(true); //checking model.isOpen ?
   const [marks, setMarks] = useState<number>(0); //result
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -32,11 +32,30 @@ export default function Quiz() {
       });
   };
 
+  const quizSecretKeys: string[] = questionList.map((x) => x.secretkey);
+
+  const SubmitQuiz = () => {
+    const key = prompt("Enter Secret Key to Submit Quiz", "XXXX");
+  
+    if (key !== null) {
+      console.log("Entered Key:", key);
+      console.log("Secret Keys:", quizSecretKeys);
+      if (quizSecretKeys.includes(key.trim())) {
+        alert("Quiz Submitted")
+      } else {
+        alert("Invalid Secret Key. Please try again.");
+      }
+    } else {
+      alert("Operation canceled.");
+    }
+  };
+  
+ 
+  
   useEffect(() => {
     getQuiz();
   }, []);
-
-
+  if(isActive==true){
 
   return (
     
@@ -62,7 +81,7 @@ export default function Quiz() {
                   </Grid>
                 </Box>
               </Container>
-
+  
               {/* Options */}
               <CssBaseline />
               <Container maxWidth="md">
@@ -87,9 +106,18 @@ export default function Quiz() {
                 </Box>
               </Container>
             </div>
-          ))}
+            
+            ))}
         </div>
       ))}
+      {/* Submit Quiz */}
+      <Button className="btn btn-info" onClick={SubmitQuiz}>Submit Quiz</Button>
     </div>
   );
+}else {
+  return(
+    <h1>Quiz not Launched yet.</h1>
+  )
+}
+
 }
