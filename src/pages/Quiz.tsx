@@ -6,10 +6,6 @@ import { styled } from "@mui/material/styles";
 
 export default function Quiz() {
   const [questionList, setquestionList] = useState<any[]>([]); //rendering questions of quiz
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); //setting index
-  const [userAnswers, setUserAnswers] = useState<string[]>([]); //checking answer
-  const [quizList, setquizList] = useState<any>([]); //handling all quizzes according to secretkey
-  const [userVerification, setUserVerification] = useState<any>(); //checking model.secretKey ?
   const [isActive, setisActive] = useState<boolean>(true); //checking model.isOpen ?
   const [marks, setMarks] = useState<number>(0); //result
 
@@ -50,7 +46,10 @@ export default function Quiz() {
     }
   };
   
- 
+//  let checkAnswer = ()=>{
+
+//  }
+// create a radio btn store value and check the the anwer also increase marks+1 if true then after this disable the checkbox? : " " and on submit display marks
   
   useEffect(() => {
     getQuiz();
