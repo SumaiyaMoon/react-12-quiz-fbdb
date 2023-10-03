@@ -45,22 +45,6 @@ export default function Quiz() {
         <div key={index}>
           {/* Random Functionalities */}
           <h1 className="text-center fst-italic my-2">{quiz.quizname}</h1>
-          <CssBaseline />
-          <Container maxWidth="md">
-            <Box>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={12} lg={12} sm={12}>
-                  <Item className=" border border-dark bg-light border-1 rounded shadow-sm">
-                    <CollectionsBookmarkIcon sx={{ fontSize: "medium" }} />
-                    <Typography marginLeft={0.5} variant="overline" gutterBottom>
-                      Question Length {quiz.quiz.length}
-                    </Typography>
-                  </Item>
-                </Grid>
-              </Grid>
-            </Box>
-          </Container>
-
           {quiz.quiz.map((question: any, i: number) => (
             <div key={i}>
               {/* Question */}
@@ -71,7 +55,7 @@ export default function Quiz() {
                     <Grid item xs={12} md={12} lg={12} sm={12}>
                       <Item className="bg-info shadow-lg rounded border border-1 border-dark my-3">
                         <Typography variant="body2" gutterBottom className="p-2 text-start">
-                      {[i+1]} : {questionList[currentQuestionIndex].quiz[currentQuestionIndex].question}
+                      {[i+1]} : {question.question}
                         </Typography>
                       </Item>
                     </Grid>
@@ -84,7 +68,7 @@ export default function Quiz() {
               <Container maxWidth="md">
                 <Box>
                   <Grid container spacing={2}>
-                  {questionList[currentQuestionIndex].quiz[currentQuestionIndex].options.map((option: string, index: number) => (
+                  {question.options.map((option: string, index: number) => (
                       <Grid key={index} item xs={12} md={6} lg={6} sm={12}>
                         <Item className="bg-light shadow-sm border border-dark border-1 rounded">
                           <Button
