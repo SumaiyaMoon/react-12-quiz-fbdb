@@ -73,8 +73,7 @@ import {
         });
     });
   };
-  export let fbDelete = () => {};
-  export let fbEdit = () => {};
+  
   export let fbGet = (nodeName: string, id?: any) => {
     return new Promise((resolve, reject) => {
       const reference = ref(db, `${nodeName}/${id ? id : ""}`);
@@ -87,7 +86,7 @@ import {
       });
     });
   };
-  export let fbGetById = () => {};
+ 
   export let fbAuth = () => {
     return new Promise((resolve, reject) => {
       onAuthStateChanged(auth, (user) => {
@@ -103,3 +102,7 @@ import {
   export let fbLogOut = () =>{
 return signOut(auth)
   }
+
+  export let fbDelete = () => {};
+  export let fbEdit = () => {};
+   export let fbGetById = () => {};

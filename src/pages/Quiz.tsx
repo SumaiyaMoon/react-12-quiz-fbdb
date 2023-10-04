@@ -49,7 +49,7 @@ export default function Quiz() {
 //  let checkAnswer = ()=>{
 
 //  }
-// create a radio btn store value and check the the anwer also increase marks+1 if true then after this disable the checkbox? : " " and on submit display marks
+// create a radio btn store value and check the the answer also increase marks+1 if true then after this disable the checkbox? : " " and on submit display marks
   
   useEffect(() => {
     getQuiz();
